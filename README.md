@@ -5,6 +5,10 @@
 
 Client sought a content management system for managing employees. Parameters desired include a list of departments, roles, and employees to include names, salaries, and managers.
 
+Help Received:
+
+Worked with Chuck Stephens, Brian Albright, Ethan Cho, and Mitchell Robbins on assignment.
+
 ### Features Implemented Include (MVP):
 - View all departments
 - View all roles
