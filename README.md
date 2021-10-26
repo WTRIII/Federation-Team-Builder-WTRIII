@@ -36,7 +36,7 @@ THEN I am presented with the job title, role id, the department that role belong
 
 WHEN I choose to view all employees
 THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-// table with employee id, first name, last name, role, department, salary, manager
+// table with employee id, first name, last name, role, department, salary
 
 WHEN I choose to add a department
 THEN I am prompted to enter the name of the department and that department is added to the database

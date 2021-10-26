@@ -2,161 +2,140 @@
 // requirements
 const inquirer = require('inquirer');
 const fs = require('fs');
-const Engineer = require("./lib/Engineer");
-const Intern = require("./lib/Intern");
-const Manager = require("./lib/Manager");
-const htmlGenerator = require("./lib/generateHTML")
+const express = require('express');
+const table = require('console.table');
+const mysql = require('mysql2');
+// Chuck Stephens let me know about this
+const hideSecrets = require('hide-secrets')
 
-const employeeData = [];
+const app = express();
+const PORT = process.env.PORT || 3001;
 
-const addEmployee = () =>{
-  return inquirer.prompt ([
+// middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const db = mysql.createConnection(
+  {
+    host: 'localhost',
+    user: 'root',
+    password: 'root1337',
+    database: 'tracker_db'
+  }
+)
+const mainMenu = () => {
+  return inquirer.prompt([
     {
-      type:'list',
-      message:'Welcome to the application. Select your choice below',
-      choices:['View all departments','View all roles', 'View all employees', 'Add a department','Add a role', 'Add an employee', 'Update an employee role', 'Exit' ],
-      name:'type'
+      type: 'list',
+      message: 'Welcome to the Federation Team Builder. Select your choice below.',
+      choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Exit'],
+      name: 'mainmenu'
     }
   ])
-  .then((data) =>{
-    // split if statement below then ask questions based on input
-      if(data.type === 'View all departments'){
+    .then((data) => {
+      // console.log('.then running')
+      if (data.mainmenu === 'View all departments') {
+        console.log('viewDepartments');
         viewDepartments();
-      } 
-      if (data.type === 'View all roles'){
+      }
+      if (data.mainmenu === 'View all roles') {
         viewRoles();
-      } 
-      if (data.type === 'View all employees'){
+      }
+      if (data.mainmenu === 'View all employees') {
         viewEmployees();
-      } 
-      if (data.type === 'Add a department'){
+      }
+      if (data.mainmenu === 'Add a department') {
         addDepartment();
-      } 
-      if (data.type === 'Add a role'){
+      }
+      if (data.mainmenu === 'Add a role') {
         addRole();
-      } 
-      if (data.type === 'Add an employee'){
+      }
+      if (data.mainmenu === 'Add an employee') {
         addEmployee();
       }
-      if (data.type === 'Exit'){
-        return;
-      } 
-    }
-  )}
-
-  const engineerQuestions = () => {
-    return inquirer.prompt([
-        {
-          type: 'input',
-          message: 'What is the name of the engineer?',
-          name: 'name',
-        },
-        {
-          type: 'input',
-          message: 'What is the ID of the engineer?',
-          name: 'id',
-        },
-        {
-          type: 'input',
-          message: 'What is the email of the engineer?',
-          name: 'email',
-        },
-        {
-          type: 'input',
-          message: 'What is the github username of the engineer?',
-          name: 'github',
-        }
-      ])
-      // this needs to store the information in the employeeData array? rather than writing file?
-      .then((data) => {
-        // console.log(data);
-        const {name, id, email, github} = data;
-        const engineer = new Engineer (name, id, email, github)
-        console.log(engineer);
-        employeeData.push(engineer);
-        console.log(employeeData);
-        addEmployee();
-        
-      });
-    }
-
-    const internQuestions = () => {
-      return inquirer.prompt([
-          {
-            type: 'input',
-            message: 'What is the name of the intern?',
-            name: 'name',
-          },
-          {
-            type: 'input',
-            message: 'What is the ID of the intern?',
-            name: 'id'
-          },
-          {
-            type: 'input',
-            message: 'What is the email of the intern?',
-            name: 'email'
-          },
-          {
-              type:'input',
-              message:'What is the school of the intern?',
-              name: 'school'
-          }
-        ])
-        .then((data) => {
-          // console.log(data);
-          const {name, id, email, school} = data;
-          const intern = new Manager (name, id, email, school)
-          console.log(intern);
-          employeeData.push(intern);
-          console.log(employeeData);
-          addEmployee();
-        });
+      if (data.mainmenu === 'Exit') {
+        process.exit(0);
       }
+    }
+    )
+};
 
-      const managerQuestions = () => {
-        return inquirer.prompt([
-            {
-              type: 'input',
-              message: 'What is the name of the Manager?',
-              name: 'name'
-            },
-            {
-              type: 'input',
-              message: 'What is the ID of the Manager?',
-              name: 'id'
-            },
-            {
-              type: 'input',
-              message: 'What is the email of the Manager?',
-              name: 'email'
-            },
-            {
-                type: 'input',
-                message: 'What is the office number of the manager?',
-                name: 'officeNumber'
-            }
-          ])
-          .then((data) => {
-            // console.log(data);
-            const {name, id, email, officeNumber} = data;
-            const manager = new Manager (name, id, email, officeNumber)
-            console.log(manager);
-            employeeData.push(manager);
-            console.log(employeeData);
-            addEmployee();
-            
-          });
-        }
-    
+const viewDepartments = async () => {
+  // console.log('viewDepartments function init')
+  const departments = await db.promise().query('SELECT * FROM departments');
+  console.table(departments[0]);
+  mainMenu();
+};
 
-const init = () =>{
-    addEmployee()
-    // .then((response) => fs.writeFileSync('./dist/team.html', userInput(response)))
-    // .then(() => console.log('Operation successful.'))
-    // .catch((err) => console.error(err))
-  }
-  
-  init();
+const viewRoles = async () => {
+  const roles = await db.promise().query('SELECT * FROM roles');
+  console.table(roles[0]);
+  mainMenu();
+};
 
-  // choices: departments[0].map((dept)=> ({name: dept.dept, value: dept.id}))
+const viewEmployees = async () => {
+  const employees = await db.promise().query('SELECT * FROM employees');
+  console.table(employees[0]);
+  mainMenu();
+};
+
+const addDepartment = async () => {
+  const departmentInput = await inquirer.prompt([
+    {
+      type: 'input',
+      message: 'Type the name of the department to add.',
+      name: 'department_name',
+    }
+  ]);
+  const insertDept = await db.promise().query("INSERT INTO departments SET?", departmentInput)
+  console.log("New department successfully added.")
+  mainMenu();
+}
+
+const addRole = async () => {
+  const roleInput = await inquirer.prompt([
+    {
+      type: 'input',
+      message: 'Type the name of the role to be added.',
+      name: 'title',
+    },
+    {
+      type: 'input',
+      message: 'Indicate the salary of the role.',
+      name: 'salary',
+    }
+  ]);
+  const insertRole = await db.promise().query("INSERT INTO roles SET?", roleInput)
+  console.log("New role successfully added.")
+  mainMenu();
+}
+
+const addEmployee = async () => {
+  const employeeInput = await inquirer.prompt([
+    {
+      type: 'input',
+      message: 'Type the first name of the employee.',
+      name: 'first_name',
+    },
+    {
+      type: 'input',
+      message: 'Type the last name of the employee.',
+      name: 'last_name',
+    },
+    {
+      type: 'input',
+      message: 'Type role id for the new employee. Reference view all roles for ids.',
+      name: 'role_id',
+    }
+  ]);
+  const insertRole = await db.promise().query("INSERT INTO employees SET?", employeeInput)
+  console.log("New employee successfully added.")
+  mainMenu();
+}
+
+const init = () => {
+  mainMenu()
+}
+
+init();
+
