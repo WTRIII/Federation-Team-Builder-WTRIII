@@ -5,7 +5,7 @@ const fs = require('fs');
 const express = require('express');
 const table = require('console.table');
 const mysql = require('mysql2');
-// Chuck Stephens let me know about this
+// Chuck Stephens let me know about this module
 const hideSecrets = require('hide-secrets')
 
 const app = express();
@@ -33,9 +33,7 @@ const mainMenu = () => {
     }
   ])
     .then((data) => {
-      // console.log('.then running')
       if (data.mainmenu === 'View all departments') {
-        console.log('viewDepartments');
         viewDepartments();
       }
       if (data.mainmenu === 'View all roles') {
@@ -61,7 +59,6 @@ const mainMenu = () => {
 };
 
 const viewDepartments = async () => {
-  // console.log('viewDepartments function init')
   const departments = await db.promise().query('SELECT * FROM departments');
   console.table(departments[0]);
   mainMenu();
