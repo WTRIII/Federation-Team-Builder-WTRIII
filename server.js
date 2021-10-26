@@ -100,6 +100,11 @@ const addRole = async () => {
       type: 'input',
       message: 'Indicate the salary of the role.',
       name: 'salary',
+    },
+    {
+      type: 'input',
+      message: 'Indicate the department ID of the role.',
+      name: 'department_id',
     }
   ]);
   const insertRole = await db.promise().query("INSERT INTO roles SET?", roleInput)

@@ -21,12 +21,12 @@ VALUES ("Ace", "Levy", 1),
 -- Ethan Cho and Brian Albright explained the below to make managers
 UPDATE employees
 SET manager_id = 4
-WHERE roles_id IN (3, 5);
+WHERE role_id IN (3, 5);
 
 UPDATE employees
 SET manager_id = 3
-WHERE roles_id IN (2);
+WHERE role_id IN (2);
 
 UPDATE employees
 SET manager_id = 2
-WHERE roles_id IN (1);
+WHERE role_id IN (1);
