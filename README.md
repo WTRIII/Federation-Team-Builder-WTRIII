@@ -1,4 +1,32 @@
-# Employee-Tracker-WTRIII
+# Federation Team Builder (Starship Troopers)
+--this is not a monetized application. don't sue me, I have no money.--
+
+## Summary
+
+Client sought a content management system for managing employees. Parameters desired include a list of departments, roles, and employees to include names, salaries, and managers.
+
+### Features Implemented Include (MVP):
+- View all departments
+- View all roles
+- View all employees
+- Add departments
+- Add roles
+- Add employees
+
+### Future Development (bonus features)
+- Update employee managers
+- View employees by manager
+- View employees by department
+- Delete departments, roles, and employees
+- View the total utilized budget of a department; in other words, the combined salaries of all employees in that department
+
+### Demo Video:
+https://watch.screencastify.com/v/i6yhUJCuEs4Qp4c4hrHd
+
+
+---------------------
+# Assignment Details to follow including User Story and Technical Specifications:
+---------------------
 
 # 12 SQL: Employee Tracker
 
